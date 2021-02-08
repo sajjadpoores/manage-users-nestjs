@@ -5,14 +5,14 @@ export class UserController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  addUser(
+  async addUser(
     @Body('name') name: string,
     @Body('username') username: string,
     @Body('password') password: string,
     @Body('email') email: string,
-  ): any {
+  ): Promise<any> {
     const newUSer = {
-      ...this.usersService.addUser(name, username, password, email),
+      ...await this.usersService.addUser(name, username, password, email),
     };
     delete newUSer.password;
     return newUSer;

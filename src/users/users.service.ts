@@ -1,14 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './users.model.ts';
 import * as uniqid from 'uniqid';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   users: User[] = [];
 
-  addUser(name: string, username: string, password: string, email: string) {
+  async addUser(name: string, username: string, password: string, email: string) {
+    const foundUser = this.users.find(user => user.email === email || user.username === username)
+    if(foundUser) {
+        throw new ConflictException('User already exist');
+    }
     const id = uniqid();
-    const newUser = new User(id, name, username, password, email);
+    const hash = await bcrypt.hash(password, 10)
+    const newUser = new User(id, name, username, hash, email);
     this.users.push(newUser);
     return newUser;
   }
