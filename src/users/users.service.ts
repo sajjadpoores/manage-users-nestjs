@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { User } from './users.model.ts';
 import * as uniqid from 'uniqid';
 import * as bcrypt from 'bcrypt';
@@ -29,8 +34,17 @@ export class UsersService {
   getUsers() {
     const users = [...this.users];
     return users.map((user) => {
-      delete user.password
-      return user
+      delete user.password;
+      return user;
     });
+  }
+
+  getUser(id: string) {
+    const user = this.users.find((user) => user.id === id);
+    if (!user) {
+      throw new NotFoundException('Could not find user.');
+    }
+    delete user.password;
+    return user;
   }
 }
