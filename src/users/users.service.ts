@@ -75,6 +75,7 @@ export class UsersService {
   deleteUser(id: string) {
     const [user, userIndex] = this.findUser(id);
     this.users.splice(userIndex, 1);
+    delete user.password;
     return user;
   }
 }
