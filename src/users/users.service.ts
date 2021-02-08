@@ -32,8 +32,9 @@ export class UsersService {
   }
 
   getUsers() {
-    const users = [...this.users];
-    return users.map((user) => {
+    // deep clone this.users
+    const users = JSON.parse(JSON.stringify(this.users));
+    return users.map((user: User) => {
       delete user.password;
       return user;
     });
@@ -49,13 +50,13 @@ export class UsersService {
   }
 
   getUser(id: string) {
-    const user = this.findUser(id)[0];
+    const user = JSON.parse(JSON.stringify(this.findUser(id)[0]));
     delete user.password;
     return user;
   }
 
   updateUser(id: string, name: string, username: string, email: string) {
-    const [user, userIndex] = this.findUser(id);
+    const user = this.findUser(id)[0];
     if (name) {
       user.name = name;
     }
@@ -65,6 +66,15 @@ export class UsersService {
     if (email) {
       user.email = email;
     }
+
+    const userCopy = JSON.parse(JSON.stringify(user));
+    delete userCopy.password;
+    return userCopy;
+  }
+
+  deleteUser(id: string) {
+    const [user, userIndex] = this.findUser(id);
+    this.users.splice(userIndex, 1);
     return user;
   }
 }
