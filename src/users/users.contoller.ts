@@ -19,11 +19,7 @@ export class UserController {
     @Body('password') password: string,
     @Body('email') email: string,
   ): Promise<any> {
-    const newUSer = {
-      ...(await this.usersService.addUser(name, username, password, email)),
-    };
-    delete newUSer.password;
-    return newUSer;
+    return await this.usersService.addUser(name, username, password, email);
   }
 
   @Get()

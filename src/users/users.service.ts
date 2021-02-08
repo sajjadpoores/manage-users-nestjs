@@ -205,21 +205,26 @@ export class UsersService {
     password: string,
     email: string,
   ) {
-    const foundUser = this.users.find(
-      (user) => user.email === email || user.username === username,
-    );
-    if (foundUser) {
-      throw new ConflictException('User already exist');
-    }
-    const id = uniqid();
     const hash = await bcrypt.hash(password, 10);
-    const newUser = new User(id, name, username, hash, email);
-    this.users.push(newUser);
-    return newUser;
+    try {
+      const result = await this.broker.call('users.create', {
+        name,
+        username,
+        email,
+        password: hash,
+      });
+      return result;
+    } catch (err) {
+      if (err.code === 11000) {
+        throw new ConflictException('User already Exists');
+      } else {
+        throw err;
+      }
+    }
   }
 
   getUsers() {
-    this.broker.call('users.find').then(res => console.log(res))
+    this.broker.call('users.find').then((res) => console.log(res));
     // deep clone this.users
     const users = JSON.parse(JSON.stringify(this.users));
     return users.map((user: User) => {
