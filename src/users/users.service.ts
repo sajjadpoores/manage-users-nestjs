@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './users.model.ts';
-import { uniqid } from 'uniqid';
+import * as uniqid from 'uniqid';
 
 @Injectable()
 export class UsersService {
