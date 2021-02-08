@@ -39,12 +39,32 @@ export class UsersService {
     });
   }
 
-  getUser(id: string) {
-    const user = this.users.find((user) => user.id === id);
-    if (!user) {
+  findUser(id: string): [User, number] {
+    const userIndex = this.users.findIndex((user) => user.id === id);
+    if (userIndex === -1) {
       throw new NotFoundException('Could not find user.');
     }
+    const user = this.users[userIndex];
+    return [user, userIndex];
+  }
+
+  getUser(id: string) {
+    const user = this.findUser(id)[0];
     delete user.password;
+    return user;
+  }
+
+  updateUser(id: string, name: string, username: string, email: string) {
+    const [user, userIndex] = this.findUser(id);
+    if (name) {
+      user.name = name;
+    }
+    if (username) {
+      user.username = username;
+    }
+    if (email) {
+      user.email = email;
+    }
     return user;
   }
 }
