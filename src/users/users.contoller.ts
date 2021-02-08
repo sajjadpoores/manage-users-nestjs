@@ -18,12 +18,12 @@ export class UserController {
     @Body('username') username: string,
     @Body('password') password: string,
     @Body('email') email: string,
-  ): Promise<any> {
+  ) {
     return await this.usersService.addUser(name, username, password, email);
   }
 
   @Get()
-  async getUsers(): Promise<any> {
+  async getUsers() {
     return await this.usersService.getUsers();
   }
 
@@ -33,17 +33,17 @@ export class UserController {
   }
 
   @Patch(':id')
-  patchUser(
+  async patchUser(
     @Param('id') id: string,
     @Body('name') name: string,
     @Body('username') username: string,
     @Body('email') email: string,
   ) {
-    return this.usersService.updateUser(id, name, username, email);
+    return await this.usersService.updateUser(id, name, username, email);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.deleteUser(id);
+  async deleteUser(@Param('id') id: string) {
+    return await this.usersService.deleteUser(id);
   }
 }

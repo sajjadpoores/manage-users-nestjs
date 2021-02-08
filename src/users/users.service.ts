@@ -194,6 +194,7 @@ export class UsersService {
       // Called after broker stopped.
       async stopped(broker) {},
     });
+
     this.broker.createService(usersServiceMoleculer);
     this.broker.start();
   }
@@ -224,26 +225,33 @@ export class UsersService {
   }
 
   async getUsers() {
-    return await this.broker.call('users.find')
-  }
-
-  findUser(id: string): [User, number] {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      throw new NotFoundException('Could not find user.');
+    try {
+      return await this.broker.call('users.find');
+    } catch (err) {
+      if (err.code === 11000) {
+        throw new ConflictException('User already Exists');
+      } else {
+        throw err;
+      }
     }
-    const user = this.users[userIndex];
-    return [user, userIndex];
   }
 
-  getUser(id: string) {
-    const user = JSON.parse(JSON.stringify(this.findUser(id)[0]));
-    delete user.password;
-    return user;
+  async getUser(id: string) {
+    try {
+      return await this.broker.call('users.get', { id });
+    } catch (err) {
+      throw new NotFoundException('404 - not found');
+    }
   }
 
-  updateUser(id: string, name: string, username: string, email: string) {
-    const user = this.findUser(id)[0];
+  async updateUser(id: string, name: string, username: string, email: string) {
+    let user: {
+      _id?: string;
+      name?: string;
+      username?: string;
+      email?: string;
+    } = await this.getUser(id);
+
     if (name) {
       user.name = name;
     }
@@ -254,15 +262,20 @@ export class UsersService {
       user.email = email;
     }
 
-    const userCopy = JSON.parse(JSON.stringify(user));
-    delete userCopy.password;
-    return userCopy;
+    try {
+      const user = await this.getUser(id);
+      return await this.broker.call('users.update', user);
+    } catch (err) {
+      if (err.code === 11000) {
+        throw new ConflictException('Email or username already Exists');
+      } else {
+        throw err;
+      }
+    }
   }
 
-  deleteUser(id: string) {
-    const [user, userIndex] = this.findUser(id);
-    this.users.splice(userIndex, 1);
-    delete user.password;
-    return user;
+  async deleteUser(id: string) {
+    const user = await this.getUser(id);
+    return await this.broker.call('users.remove', { id });
   }
 }

@@ -99,6 +99,18 @@ export class usersServiceMoleculer extends Service {
               });
             },
           ],
+          update: [
+            (ctx, res) => {
+              delete res.password;
+              return res;
+            },
+          ],
+          remove: [
+            (ctx, res) => {
+              delete res.password;
+              return res;
+            },
+          ],
         },
       },
     });
