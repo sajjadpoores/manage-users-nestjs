@@ -7,15 +7,30 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   users: User[] = [];
 
-  async addUser(name: string, username: string, password: string, email: string) {
-    const foundUser = this.users.find(user => user.email === email || user.username === username)
-    if(foundUser) {
-        throw new ConflictException('User already exist');
+  async addUser(
+    name: string,
+    username: string,
+    password: string,
+    email: string,
+  ) {
+    const foundUser = this.users.find(
+      (user) => user.email === email || user.username === username,
+    );
+    if (foundUser) {
+      throw new ConflictException('User already exist');
     }
     const id = uniqid();
-    const hash = await bcrypt.hash(password, 10)
+    const hash = await bcrypt.hash(password, 10);
     const newUser = new User(id, name, username, hash, email);
     this.users.push(newUser);
     return newUser;
+  }
+
+  getUsers() {
+    const users = [...this.users];
+    return users.map((user) => {
+      delete user.password
+      return user
+    });
   }
 }
