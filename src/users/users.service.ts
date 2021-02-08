@@ -9,6 +9,7 @@ export class UsersService {
   addUser(name: string, username: string, password: string, email: string) {
     const id = uniqid();
     const newUser = new User(id, name, username, password, email);
-    this.users.push(newUser)
+    this.users.push(newUser);
+    return newUser;
   }
 }
