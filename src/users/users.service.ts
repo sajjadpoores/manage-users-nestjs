@@ -223,14 +223,8 @@ export class UsersService {
     }
   }
 
-  getUsers() {
-    this.broker.call('users.find').then((res) => console.log(res));
-    // deep clone this.users
-    const users = JSON.parse(JSON.stringify(this.users));
-    return users.map((user: User) => {
-      delete user.password;
-      return user;
-    });
+  async getUsers() {
+    return await this.broker.call('users.find')
   }
 
   findUser(id: string): [User, number] {

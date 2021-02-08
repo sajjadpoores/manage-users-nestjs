@@ -79,6 +79,12 @@ export class usersServiceMoleculer extends Service {
           ],
         },
         after: {
+          create: [
+            (ctx, res) => {
+              delete res.password;
+              return res;
+            },
+          ],
           get: [
             (ctx, res) => {
               delete res.password;

@@ -23,8 +23,8 @@ export class UserController {
   }
 
   @Get()
-  getUsers() {
-    return this.usersService.getUsers();
+  async getUsers(): Promise<any> {
+    return await this.usersService.getUsers();
   }
 
   @Get(':id')
