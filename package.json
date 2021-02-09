@@ -30,6 +30,7 @@
     "moleculer-db-adapter-mongoose": "^0.8.9",
     "mongoose": "^5.11.15",
     "nats": "^1.4.12",
+    "nest": "^0.1.6",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
