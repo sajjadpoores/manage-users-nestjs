@@ -19,7 +19,7 @@ export class usersServiceMoleculer extends Service {
       name: 'users',
       mixins: [DbService],
       adapter: new MongooseAdapter(
-        'mongodb://localhost:27017/microservice_users',
+        'mongodb://172.17.0.4:27017/microservice_users',
       ),
       model: mongoose.model(
         'User',

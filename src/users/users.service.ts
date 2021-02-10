@@ -48,7 +48,7 @@ export class UsersService {
       // More info: https://moleculer.services/docs/0.14/networking.html
       // Note: During the development, you don't need to define it because all services will be loaded locally.
       // In production you can set it via `TRANSPORTER=nats://localhost:4222` environment variable.
-      transporter: 'nats://localhost:4222', //"NATS"
+      transporter: 'nats://172.17.0.2:4222', //"NATS"
 
       // Define a cacher.
       // More info: https://moleculer.services/docs/0.14/caching.html
